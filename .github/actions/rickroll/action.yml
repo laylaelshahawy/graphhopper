@@ -1,0 +1,11 @@
+name: Rickroll
+description: Display a Rickroll when a test fails
+
+runs:
+  using: composite
+  steps:
+    - name: Rickroll
+      shell: bash
+      run: |
+        echo "::notice title=Rickroll::Never gonna give you up!"
+        echo "https://www.youtube.com/watch?v=dQw4w9WgXcQ"

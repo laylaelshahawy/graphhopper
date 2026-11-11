@@ -22,10 +22,10 @@ jobs:
           cache: maven
 
       - name: Run GraphHopper test
+        id: tests
         run: mvn -B -pl core -am -Dtest=ReaderElementTest -Dsurefire.failIfNoSpecifiedTests=false test
+      
 
       - name: Rickroll on test failure
-        if: failure()
-        run: |
-          echo "Never gonna give you up!"
-          echo "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        if: ${{ failure() && steps.tests.outcome == 'failure' }}
+        uses: ./.github/actions/rickroll
