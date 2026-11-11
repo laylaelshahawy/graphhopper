@@ -23,7 +23,9 @@ jobs:
 
       - name: Run GraphHopper test
         id: tests
-        run: mvn -B -pl core -am -Dtest=ReaderElementTest -Dsurefire.failIfNoSpecifiedTests=false test
+        run: |
+          mvn -B -pl core -am -Dtest=ReaderElementTest -Dsurefire.failIfNoSpecifiedTests=false test
+          exit 1
       
 
       - name: Rickroll on test failure
