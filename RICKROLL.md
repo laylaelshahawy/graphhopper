@@ -2,28 +2,41 @@
 
 ## Objectif
 
-Configurer un workflow GitHub Actions qui affiche un Rickroll lorsqu'un test GraphHopper échoue.
+Configurer GitHub Actions afin d'afficher un Rickroll lorsqu'un test du projet GraphHopper échoue, en utilisant une action réutilisable.
 
 ## Implémentation
 
-Le fichier `.github/workflows/rickroll.yml` exécute `ReaderElementTest` avec Maven sur Java 17.
+Le workflow `.github/workflows/rickroll.yml` exécute la classe `ReaderElementTest` du module `core` avec Maven et Java 17.
 
-Une étape conditionnelle utilise `if: failure()` pour afficher le message et le lien du Rickroll lorsqu'une étape précédente échoue. Le workflow conserve son statut d'échec.
+L'action réutilisable se trouve dans `.github/actions/rickroll/action.yml`. Il s'agit d'une action composite qui affiche un message GitHub Actions et le lien du Rickroll.
+
+Le workflow appelle cette action avec :
+
+```yaml
+- name: Rickroll on test failure
+  if: ${{ failure() && steps.tests.outcome == 'failure' }}
+  uses: ./.github/actions/rickroll
+```
+
+Cette condition vérifie que l'étape de tests Maven a échoué. L'action Rickroll s'exécute alors, sans masquer l'échec du workflow.
 
 ## Validation
 
-Deux scénarios ont été vérifiés sur GitHub Actions :
-
 | Scénario | Résultat |
 |---|---|
-| Tests réussis (3 tests, 0 échec) | Workflow réussi, Rickroll ignoré |
-| Échec simulé avec `exit 1` après les tests | Workflow échoué, Rickroll affiché |
+| Tests `ReaderElementTest` réussis (3 tests, 0 échec) | Workflow réussi, action Rickroll ignorée |
+| Échec simulé avec `exit 1` après les tests Maven | Workflow échoué, action Rickroll exécutée |
 
-La seconde vérification valide le déclenchement conditionnel après un échec du workflow, sans constituer un échec réel d'assertion Java.
+Le deuxième scénario démontre que l'action composite est bien appelée lorsque l'étape de test se termine en échec.
+
+Il s'agit d'un **échec simulé**, et non d'une assertion Java réellement échouée.
 
 ## Branches
 
-- `tache3-rickroll` : version définitive du workflow.
-- `demo-rickroll-failure` : démonstration de l'échec contrôlé.
+- `tache3-rickroll` : version principale de la solution.
+- `demo-reusable-rickroll` : démonstration du déclenchement de l'action réutilisable.
 
-Dépôt : https://github.com/laylaelshahawy/graphhopper
+## Dépôt
+
+https://github.com/laylaelshahawy/graphhopper
+
